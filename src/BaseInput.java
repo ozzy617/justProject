@@ -1,44 +1,56 @@
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class BaseInput {
 
-    public static String BaseReader(String id, String pass) {
-        System.out.println(id + pass);
-        boolean flag = false;
-        try{
-            BufferedReader baza = new BufferedReader(new FileReader("/Users/artemlaptev/Desktop/baza.txt"));
+    /**
+     * Reads user information from the database stored in the "baza.txt" file and validates
+     * the input ID and password. If a matching ID is found with the correct password,
+     * displays user information in a dialog box.
+     *
+     * @param inputId The input ID string to be validated.
+     * @param inputPass The input password string to be validated.
+     * @return {@code true} if the input ID and password are valid and match a record in the database,
+     *         {@code false} otherwise.
+     *
+     * @throws RuntimeException if an IOException occurs while reading the database file.
+     */
+    public static boolean readUserInputFromDatabase(String inputId, String inputPass) {
+        System.out.println("Reading from the database for input ID: " + inputId + " and password: " + inputPass);
+        boolean success = false;
+        try {
+            BufferedReader baza = new BufferedReader(new FileReader("baza.txt"));
             String line = baza.readLine();
             String[] list;
-            boolean chek = false;
-            while (line != null){
+            while (line != null) {
                 list = line.split(" ");
-                System.out.println(list[0] + list[1]);
+                String readId = list[0];
+                String readPassword = list[1];
+                System.out.println("Reading the line where ID: " + readId + " and password: " + readPassword);
 
-                if ((list[0].equals(id)) & (list[1].equals(pass))){
-                    JOptionPane.showMessageDialog(null,"Здравствуйте, " + list[3]+"!\nВаш ID: " + id +"\nВаш баланс: " + list[2],"",JOptionPane.PLAIN_MESSAGE);
-                    flag = true;
-                    chek = true;
+                if (readId.equals(inputId)) {
+                    if (!readPassword.equals(inputPass)) {
+                        JOptionPane.showMessageDialog(null, "Неверный пароль", "Ошибка",
+                                JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        String userName = list[3];
+                        String userBalance = list[2];
+                        JOptionPane.showMessageDialog(null,
+                                "Здравствуйте, " + userName + "!\nВаш ID: " + inputId + "\nВаш баланс: " + userBalance,
+                                "", JOptionPane.PLAIN_MESSAGE);
+                        success = true;
+                    }
+                    // database record was found - no need to continue the cycle
+                    break;
                 }
                 line = baza.readLine();
             }
-            if (chek != true){
-                JOptionPane.showMessageDialog(null,"Неверный пароль", " ",JOptionPane.PLAIN_MESSAGE);
-            }
             baza.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {         //ЧТО ЗА ИСКЛЮЧЕНИЯ???
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    if (flag == true){
-        return "yes";
-    }
-    else{
-        return "no";
-    }
+        return success;
     }
 }

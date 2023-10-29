@@ -1,22 +1,16 @@
 public class Main {
+
     public static void main(String[] args) {
         Form form =  new Form();
         form.setVisible(true);
-        InputListener Compilator = new IdPassCompilator();
-        form.setInputListener(Compilator);
+        InputListener compilator = new IdPassCompilator();
+        form.setInputListener(compilator);
     }
-    public static class IdPassCompilator implements InputListener{
 
-
+    public static class IdPassCompilator implements InputListener {
         @Override
         public void getInput(String id, String pass) {
-//            System.out.println("DADA");
-            System.out.println("Это проверка: pass, id = " + pass + ", " + id);
-
-
+            System.out.println("Проверка пройдена: pass = " + pass + ", ID = " + id);
         }
-
-
-
     }
 }

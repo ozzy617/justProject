@@ -3,9 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class Form extends JFrame {
-
 
     private String id;
     private String pass;
@@ -13,18 +11,11 @@ public class Form extends JFrame {
     private JTextField passField;
     private InputListener inputs; //почему на основе интерфейса
 
-
     public void setInputListener(InputListener inputListener) {
-        System.out.println(inputs + " +0");
         inputs = inputListener;
-        System.out.println(inputs + " +1");
-        System.out.println(inputListener + " +2");
     }
 
-
-    public Form(){
-
-
+    public Form() {
         super("Вход");
         super.setBounds(600,200,300,150);
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,15 +38,12 @@ public class Form extends JFrame {
     class ButtonEvent implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-              id = idField.getText();
-              pass = passField.getText();
-            String lastID = IDHelper.getID(id);
-            if ((lastID != "no") & BaseInput.BaseReader(id,pass).equals("yes")) {
+            id = idField.getText();
+            pass = passField.getText();
+            if (IDHelper.validateId(id) & BaseInput.readUserInputFromDatabase(id, pass)) {
                 inputs.getInput(id, pass);
                 dispose();
             }
-
-
         }
     }
 }
