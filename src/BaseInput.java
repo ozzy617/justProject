@@ -1,44 +1,49 @@
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class BaseInput {
-
-    public static String BaseReader(String id, String pass) {
-        System.out.println(id + pass);
-        boolean flag = false;
+    private static String baseUserBalance;
+    private static String baseUserName;
+    public static String getUserName(){
+        return baseUserName;
+    }
+    public static String getUserBalance(){
+        return baseUserBalance;
+    }
+    public static boolean readUserFromBase(String inputId, String inputPass) {
+        System.out.println("Reading from the database for input ID: " + inputId + " and password: " + inputPass);
+        boolean succes = false;
         try{
-            BufferedReader baza = new BufferedReader(new FileReader("/Users/artemlaptev/Desktop/baza.txt"));
+            BufferedReader baza = new BufferedReader(new FileReader("baza.txt"));
             String line = baza.readLine();
             String[] list;
-            boolean chek = false;
-            while (line != null){
+            while (line != null) {
                 list = line.split(" ");
-                System.out.println(list[0] + list[1]);
+                String readId = list[0];
+                String readPass = list[1];
+                System.out.println("Reading the line where ID: " + readId + " and password: " + readPass);
 
-                if ((list[0].equals(id)) & (list[1].equals(pass))){
-                    JOptionPane.showMessageDialog(null,"Здравствуйте, " + list[3]+"!\nВаш ID: " + id +"\nВаш баланс: " + list[2],"",JOptionPane.PLAIN_MESSAGE);
-                    flag = true;
-                    chek = true;
+
+                if (readId.equals(inputId)) {
+                    if (readPass.equals(inputPass)) {
+                          baseUserBalance = list[2];
+                          baseUserName = list[3];
+                        //JOptionPane.showMessageDialog(null, "Здравствуйте, " + userName + "\nВаш ID: " + inputId + "\nВаш баланс: " + userBalance,"", JOptionPane.PLAIN_MESSAGE);
+                        succes = true;
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Неверный пароль.", "Ошибка", JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
                 line = baza.readLine();
-            }
-            if (chek != true){
-                JOptionPane.showMessageDialog(null,"Неверный пароль", " ",JOptionPane.PLAIN_MESSAGE);
+
             }
             baza.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {         //ЧТО ЗА ИСКЛЮЧЕНИЯ???
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    if (flag == true){
-        return "yes";
-    }
-    else{
-        return "no";
-    }
+        return succes;
     }
 }

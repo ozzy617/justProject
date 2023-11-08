@@ -3,59 +3,51 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class Form extends JFrame {
-
-
     private String id;
     private String pass;
+    private String userName;
+    private String userBalance;
     private JTextField idField;
     private JTextField passField;
     private InputListener inputs; //почему на основе интерфейса
 
-
     public void setInputListener(InputListener inputListener) {
-        System.out.println(inputs + " +0");
         inputs = inputListener;
-        System.out.println(inputs + " +1");
-        System.out.println(inputListener + " +2");
     }
 
-
     public Form(){
-
-
         super("Вход");
         super.setBounds(600,200,300,150);
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        Container container = super.getContentPane();
-        container.setLayout(new GridLayout(3,2,2,15));
+        Container containerForm = super.getContentPane();
+        containerForm.setLayout(new GridLayout(3,2,2,15));
         JLabel id = new JLabel("Введите ID");
         JLabel pass = new JLabel("Введите пароль");
         idField = new JTextField();
         passField = new JPasswordField();
-        container.add(id);
-        container.add(idField);
-        container.add(pass);
-        container.add(passField);
+        containerForm.add(id);
+        containerForm.add(idField);
+        containerForm.add(pass);
+        containerForm.add(passField);
         JButton sendButton = new JButton("Отправить");
-        container.add(sendButton);
+        containerForm.add(sendButton);
         sendButton.addActionListener(new ButtonEvent());
     }
 
-    class ButtonEvent implements ActionListener {
+    private class ButtonEvent implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
               id = idField.getText();
               pass = passField.getText();
-            String lastID = IDHelper.getID(id);
-            if ((lastID != "no") & BaseInput.BaseReader(id,pass).equals("yes")) {
-                inputs.getInput(id, pass);
+
+            if (IDHelper.validateId(id) & BaseInput.readUserFromBase(id,pass)) {
+                JOptionPane.showMessageDialog(null, "Обработка...", "", JOptionPane.PLAIN_MESSAGE);
+                userBalance = BaseInput.getUserBalance();
+                userName = BaseInput.getUserName();
+                inputs.getInput(id, pass, userName,userBalance);
                 dispose();
             }
-
-
         }
     }
 }

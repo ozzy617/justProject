@@ -1,77 +1,58 @@
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class IDHelper {
+public class IDHelper implements IdCheker{
+    private final static int ID_LENGTH = 8;
 
 
-    public static String getID(String id){
-        return setID(id);
-    }
-    private static String setID(String id){
-        String cd = chekID(id);
-        if (cd == "yes"){
-            return "yes";
-        }
-        else{
-            return "no";
-        }
-    }
+    public static boolean validateId(String id){
+        String some = id;
 
-    private static String chekID(String id){
+        boolean chek = true;
         try{
-            char[] symbolArray = id.toCharArray();//ВОПРОС
-            int chek = Integer.parseInt(id);
-            if (symbolArray.length != 8){
-                JOptionPane.showMessageDialog(null, "Ошибка: ID должен состоять из 8 символов","",JOptionPane.PLAIN_MESSAGE);
-                return "no";
+            Integer.parseInt(id);
+            if (id.length() != ID_LENGTH){
+                JOptionPane.showMessageDialog(null, "ID должен состоять из 8 символов.","Ошибка",JOptionPane.PLAIN_MESSAGE);
+                chek = false;
             }
-            else if (passReader(id) == "nope"){
-                JOptionPane.showMessageDialog(null,"Ваш ID не зарегистрирован","",JOptionPane.PLAIN_MESSAGE);
-                return "no";
-            }
-            else{
-                return "yes";
+            else if (!idExistance(id)){
+                JOptionPane.showMessageDialog(null,"ID не зарегистрирован.","",JOptionPane.PLAIN_MESSAGE);
+                chek = false;
             }
         } catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(null,"Ошибка: ID не может содержать букв и сторонних символов","",JOptionPane.PLAIN_MESSAGE);
-            return "no";
+            if (some.equals("")){
+                JOptionPane.showMessageDialog(null,"ID не был введен.","Ошибка",JOptionPane.PLAIN_MESSAGE);
+
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"ID не может содержать буквы и сторонних символов.","Ошибка",JOptionPane.PLAIN_MESSAGE);
+
+            }
         }
+        return chek;
     }
 
-    private static String passReader(String id) {
-        boolean chek = false;
+    private static boolean idExistance(String id) {
+        boolean succes = false;
         try {
-            BufferedReader baza = new BufferedReader(new FileReader("/Users/artemlaptev/Desktop/baza.txt"));
+            BufferedReader baza = new BufferedReader(new FileReader("baza.txt"));
             String line = baza.readLine();
             String[] list;
             while (line != null) {
                 list = line.split(" ");
-                System.out.println(list[0] + list[1]);
-                boolean flag = false;
-                if (list[0].equals(id)) {
-                    chek = true;
-                    flag = true;
-                }
-                if (flag == true) {
+                String readId = list[0];
+                if (readId.equals(id)) {
+                    succes = true;
                     break;
                 }
                 line = baza.readLine();
             }
             baza.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {         //ЧТО ЗА ИСКЛЮЧЕНИЯ???
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-      if (chek == true){
-          return "yep";
-      }
-      else{
-          return "nope";
-
-      }
+        return succes;
     }
 }
