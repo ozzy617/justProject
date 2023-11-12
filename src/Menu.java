@@ -14,7 +14,8 @@ public class Menu extends JFrame {
         Container containerMenu = super.getContentPane();
         containerMenu.setLayout(new GridLayout(4,2,2,10));
         JLabel userInfo = new JLabel("Здравствуйте, " + userName+ "! Ваш баланс: " + userBalance);
-        JLabel userQuestion = new JLabel("Что бы в хотели сделать?");containerMenu.add(userInfo);
+        JLabel userQuestion = new JLabel("Что бы в хотели сделать?");
+        containerMenu.add(userInfo);
         containerMenu.add(userQuestion);
         JButton transferMoney = new JButton("Перевести");
         JButton putMoney = new JButton("Пополнить");
@@ -30,8 +31,8 @@ public class Menu extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e){
             dispose();
-
-
+            TransferMenu transferMenu = new TransferMenu(userLine, userBalance);
+            transferMenu.setVisible(true);
         }
     }
     private class putMoneyButtonEvent implements ActionListener {

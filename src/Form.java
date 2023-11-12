@@ -1,20 +1,22 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Form extends JFrame {
+public class Form extends JFrame{
     private String id;
     private String pass;
     private String userName;
     private String userBalance;
     private JTextField idField;
     private JTextField passField;
-    private InputListener inputs; //почему на основе интерфейса
-
+    private InputListener inputs;
     public void setInputListener(InputListener inputListener) {
         inputs = inputListener;
     }
+
+
 
     public Form(){
         super("Вход");
@@ -35,18 +37,19 @@ public class Form extends JFrame {
         sendButton.addActionListener(new ButtonEvent());
     }
 
-    private class ButtonEvent implements ActionListener {
+    private class ButtonEvent implements ActionListener, IdCheker {
         @Override
         public void actionPerformed(ActionEvent e) {
               id = idField.getText();
               pass = passField.getText();
-
-            if (IDHelper.validateId(id) & BaseInput.readUserFromBase(id,pass)) {
-                JOptionPane.showMessageDialog(null, "Обработка...", "", JOptionPane.PLAIN_MESSAGE);
-                userBalance = BaseInput.getUserBalance();
-                userName = BaseInput.getUserName();
-                inputs.getInput(id, pass, userName,userBalance);
-                dispose();
+            if (validateId(id)) {
+                if (BaseInput.readUserFromBase(id,pass)){
+                    JOptionPane.showMessageDialog(null, "Обработка...", "", JOptionPane.PLAIN_MESSAGE);
+                    userName = BaseInput.getUserName();
+                    userBalance = BaseInput.getUserBalance();
+                    inputs.getInput(id, pass, userName,userBalance);
+                    dispose();
+                }
             }
         }
     }
